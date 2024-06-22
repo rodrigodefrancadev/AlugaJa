@@ -15,3 +15,52 @@ model User {
     username String @unique
     password String
 }
+
+model Cliente {
+    id          String     @id @default(cuid())
+    nome        String
+    cpf         String
+    estadoCivil String
+    profissao   String
+    endereco    String
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    Contrato    Contrato[]
+}
+
+model Proprietario {
+    id          String   @id @default(cuid())
+    nome        String
+    cpf         String
+    estadoCivil String
+    profissao   String
+    endereco    String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    Imovel      Imovel[]
+}
+
+model Imovel {
+    id             String       @id @default(cuid())
+    proprietarioId String
+    proprietario   Proprietario @relation(fields: [proprietarioId], references: [id])
+    apelido        String
+    endereco       String
+    tipo           String
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+    Contrato       Contrato[]
+}
+
+model Contrato {
+    id         String   @id @default(cuid())
+    imovelId   String
+    imovel     Imovel   @relation(fields: [imovelId], references: [id])
+    clienteId  String
+    cliente    Cliente  @relation(fields: [clienteId], references: [id])
+    valor      Float
+    dataInicio DateTime
+    dataFim    DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
