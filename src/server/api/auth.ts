@@ -8,9 +8,13 @@ export type AuthUser = {
   username: string;
 };
 
-export type AuthUserWithToken = AuthUser & {
+type TokenInfo = {
   token: string;
+  createdAt: string;
+  expriresAt: string;
 };
+
+export type AuthUserWithToken = AuthUser & TokenInfo;
 
 export interface AuthCredentials {
   username: string;
@@ -40,10 +44,10 @@ export async function login(
     username: user.username,
   };
 
-  const token = await generateJwtToken(authUser);
+  const tokenInfo = await generateJwtToken(authUser);
   const authUserWithToken: AuthUserWithToken = {
     ...authUser,
-    token,
+    ...tokenInfo,
   };
 
   return authUserWithToken;
@@ -51,7 +55,15 @@ export async function login(
 
 export async function register(
   credentials: AuthCredentials,
-): Promise<AuthUser | null> {
+): Promise<AuthUser> {
+  const existingUser = await db.user.findFirst({
+    where: {
+      username: credentials.username,
+    },
+  });
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
   const hashedPassword = bcrypt.hashSync(credentials.password, 10);
 
   const user = await db.user.create({
@@ -69,48 +81,23 @@ export async function register(
   return authUser;
 }
 
-export async function getUserById(id: string): Promise<AuthUser | null> {
-  const user = await db.user.findUnique({
-    where: {
-      id,
-    },
+export async function generateJwtToken(user: AuthUser): Promise<TokenInfo> {
+  const token = jwt.sign(user, env.JWT_SECRET, {
+    expiresIn: "1h",
   });
+  const data = jwt.decode(token) as jwt.JwtPayload;
 
-  if (!user) {
-    return null;
+  if (data.exp === undefined || data.iat === undefined) {
+    throw new Error("Invalid token");
   }
 
-  const authUser: AuthUser = {
-    id: user.id,
-    username: user.username,
+  const createdAt = new Date(data.iat * 1000).toISOString();
+  const expriresAt = new Date(data.exp * 1000).toISOString();
+  return {
+    token,
+    createdAt,
+    expriresAt,
   };
-
-  return authUser;
-}
-
-export async function getUserByUsername(
-  username: string,
-): Promise<AuthUser | null> {
-  const user = await db.user.findFirst({
-    where: {
-      username,
-    },
-  });
-
-  if (!user) {
-    return null;
-  }
-
-  const authUser: AuthUser = {
-    id: user.id,
-    username: user.username,
-  };
-
-  return authUser;
-}
-
-export async function generateJwtToken(user: AuthUser): Promise<string> {
-  return jwt.sign(user, env.JWT_SECRET);
 }
 
 export async function decodeAndVerifyJwtToken(
@@ -122,4 +109,15 @@ export async function decodeAndVerifyJwtToken(
   } catch (error) {
     return null;
   }
+}
+
+export async function getUserFromRequest(req: { headers: Headers }) {
+  const authorization = req.headers.get("authorization");
+  if (authorization) {
+    const user = await decodeAndVerifyJwtToken(
+      authorization.split(" ")[1] ?? "",
+    );
+    return user;
+  }
+  return null;
 }

@@ -3,21 +3,10 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
-import { decodeAndVerifyJwtToken } from "./auth";
+import { getUserFromRequest } from "./auth";
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  async function getUserFromHeader() {
-    const authorization = opts.headers.get("authorization");
-    if (authorization) {
-      const user = await decodeAndVerifyJwtToken(
-        authorization.split(" ")[1] ?? "",
-      );
-      return user;
-    }
-    return null;
-  }
-
-  const authUser = await getUserFromHeader();
+  const authUser = await getUserFromRequest(opts);
 
   return {
     db,

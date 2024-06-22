@@ -7,8 +7,11 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
-  const body = request.json();
+  const body = await request.json();
   const credentials = schema.parse(body);
   const authUserWithToken = await login(credentials);
+  if (!authUserWithToken) {
+    return new Response("Invalid credentials", { status: 401 });
+  }
   return Response.json(authUserWithToken);
 }
