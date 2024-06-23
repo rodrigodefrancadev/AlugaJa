@@ -1,4 +1,13 @@
-export class ContratoDeAluguel {
+export interface ContratoDeAluguelProps {
+  imovelId: string;
+  clienteId: string;
+  dataInicio: Date;
+  dataFim: Date;
+  valor: number;
+  diaVencimento: number;
+}
+
+export class ContratoDeAluguel implements ContratoDeAluguelProps {
   constructor(
     public readonly id: string,
     public readonly imovelId: string,

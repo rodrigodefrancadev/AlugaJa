@@ -1,4 +1,12 @@
-export class Cliente {
+export interface ClienteProps {
+  nome: string;
+  cpf: string;
+  estadoCivil: string;
+  profissao: string;
+  endereco: string;
+}
+
+export class Cliente implements ClienteProps {
   constructor(
     public readonly id: string,
     public readonly nome: string,
