@@ -76,7 +76,7 @@ model ContratoDeAluguel {
     valor         Float
     diaVencimento Int
     dataInicio    DateTime
-    dataFim       DateTime
+    meses         Int
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
 }

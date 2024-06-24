@@ -20,6 +20,28 @@ export class ContratoDeAluguelRepositoryImp
   async cadastrarContratoDeAluguel(
     dados: ContratoDeAluguelProps,
   ): Promise<ContratoDeAluguel> {
+    const { imovelId, clienteId } = dados;
+    const imovelDb = await this.prisma.imovel.findUnique({
+      where: {
+        id: imovelId,
+        userId: this.userId,
+      },
+    });
+    if (!imovelDb) {
+      throw new Error("Imóvel não encontrado");
+    }
+
+    const clienteDb = await this.prisma.cliente.findUnique({
+      where: {
+        id: clienteId,
+        userId: this.userId,
+      },
+    });
+
+    if (!clienteDb) {
+      throw new Error("Cliente não encontrado");
+    }
+
     const contratoDeAluguelDb = await this.prisma.contratoDeAluguel.create({
       data: { ...dados, userId: this.userId },
     });
@@ -67,7 +89,7 @@ export class ContratoDeAluguelRepositoryImp
       contratoDeAluguelDb.imovelId,
       contratoDeAluguelDb.clienteId,
       contratoDeAluguelDb.dataInicio,
-      contratoDeAluguelDb.dataFim,
+      contratoDeAluguelDb.meses,
       contratoDeAluguelDb.valor,
       contratoDeAluguelDb.diaVencimento,
     );

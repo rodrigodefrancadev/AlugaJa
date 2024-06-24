@@ -2,7 +2,6 @@ import { authHandler } from "../_helper/auth-handler";
 import { UseCaseFactory } from "~/factories/user-case.factory";
 import { imovelPropsSchema } from "~/domain/entities/imovel";
 import { NextRequest } from "next/server";
-import { NextApiRequest } from "next";
 
 export function POST(request: Request) {
   return authHandler(request, async (user) => {
