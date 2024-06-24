@@ -17,15 +17,15 @@ model User {
 }
 
 model Cliente {
-    id          String     @id @default(cuid())
+    id          String              @id @default(cuid())
     nome        String
     cpf         String
     estadoCivil String
     profissao   String
     endereco    String
-    createdAt   DateTime   @default(now())
-    updatedAt   DateTime   @updatedAt
-    Contrato    Contrato[]
+    createdAt   DateTime            @default(now())
+    updatedAt   DateTime            @updatedAt
+    Contrato    ContratoDeAluguel[]
 }
 
 model Proprietario {
@@ -41,17 +41,17 @@ model Proprietario {
 }
 
 model Imovel {
-    id             String       @id @default(cuid())
+    id             String              @id @default(cuid())
     proprietarioId String
-    proprietario   Proprietario @relation(fields: [proprietarioId], references: [id])
+    proprietario   Proprietario        @relation(fields: [proprietarioId], references: [id])
     apelido        String
     endereco       String
-    createdAt      DateTime     @default(now())
-    updatedAt      DateTime     @updatedAt
-    Contrato       Contrato[]
+    createdAt      DateTime            @default(now())
+    updatedAt      DateTime            @updatedAt
+    Contrato       ContratoDeAluguel[]
 }
 
-model Contrato {
+model ContratoDeAluguel {
     id            String   @id @default(cuid())
     imovelId      String
     imovel        Imovel   @relation(fields: [imovelId], references: [id])
