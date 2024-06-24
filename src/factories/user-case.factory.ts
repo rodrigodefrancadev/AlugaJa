@@ -5,6 +5,9 @@ import { DetalharClienteUseCase } from "~/domain/use-cases/detalhar-cliente.use-
 import { CadastrarProprietarioUseCase } from "~/domain/use-cases/cadastrar-proprietario.use-case";
 import { ListarProprietariosUseCase } from "~/domain/use-cases/listar-proprietarios.use-case";
 import { DetalharProprietarioUseCase } from "~/domain/use-cases/detalhar-proprietario.use-case";
+import { CadastrarImovelUseCase } from "~/domain/use-cases/cadastrar-imovel.use-case";
+import { DetalharImovelUseCase } from "~/domain/use-cases/detalhar-imovel.use-case";
+import { ListarImoveisUseCase } from "~/domain/use-cases/listar-imoveis.use-case";
 
 export class UseCaseFactory {
   public static cadastrarCliente(userId: string) {
@@ -35,5 +38,20 @@ export class UseCaseFactory {
   public static detalharProprietario(userId: string) {
     const repository = RepositoryFactory.proprietario(userId);
     return new DetalharProprietarioUseCase(repository);
+  }
+
+  public static cadastrarImovel(userId: string) {
+    const repository = RepositoryFactory.imovel(userId);
+    return new CadastrarImovelUseCase(repository);
+  }
+
+  public static listarImoveis(userId: string) {
+    const repository = RepositoryFactory.imovel(userId);
+    return new ListarImoveisUseCase(repository);
+  }
+
+  public static detalharImovel(userId: string) {
+    const repository = RepositoryFactory.imovel(userId);
+    return new DetalharImovelUseCase(repository);
   }
 }

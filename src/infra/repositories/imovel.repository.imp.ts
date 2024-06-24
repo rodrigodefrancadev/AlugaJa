@@ -12,9 +12,22 @@ export class ImovelRepositoryImp implements ImovelRepository {
   ) {}
 
   async cadastrarImovel(dados: ImovelProps): Promise<Imovel> {
+    const { proprietarioId } = dados;
+    const proprietarioDb = await this.prisma.proprietario.findUnique({
+      where: {
+        id: proprietarioId,
+        userId: this.userId,
+      },
+    });
+
+    if (!proprietarioDb) {
+      throw new Error("Proprietário não encontrado");
+    }
+
     const imovelDb = await this.prisma.imovel.create({
       data: { ...dados, userId: this.userId },
     });
+
     const imovel = this.imovelDbToImovel(imovelDb);
     return imovel;
   }

@@ -1,8 +1,12 @@
-export interface ImovelProps {
-  proprietarioId: string;
-  apelido: string;
-  endereco: string;
-}
+import { z } from "zod";
+
+export const imovelPropsSchema = z.object({
+  proprietarioId: z.string(),
+  apelido: z.string().min(1),
+  endereco: z.string().min(1),
+});
+
+export type ImovelProps = z.infer<typeof imovelPropsSchema>;
 
 export class Imovel implements ImovelProps {
   constructor(
