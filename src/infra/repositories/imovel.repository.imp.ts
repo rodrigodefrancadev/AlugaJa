@@ -1,6 +1,9 @@
 import { PrismaClient, Imovel as ImovelDb } from "@prisma/client";
 import { Imovel, ImovelProps } from "~/domain/entities/imovel";
-import { ImovelRepository } from "~/domain/repositories/imovel.repository";
+import {
+  ImovelRepository,
+  ListarImoveisFiltro,
+} from "~/domain/repositories/imovel.repository";
 
 export class ImovelRepositoryImp implements ImovelRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -13,8 +16,15 @@ export class ImovelRepositoryImp implements ImovelRepository {
     return imovel;
   }
 
-  async listarImoveis(): Promise<Imovel[]> {
-    const imoveisDb = await this.prisma.imovel.findMany();
+  async listarImoveis(filtro?: ListarImoveisFiltro): Promise<Imovel[]> {
+    const imoveisDb = await this.prisma.imovel.findMany({
+      where:
+        filtro !== undefined
+          ? {
+              proprietarioId: filtro.proprietarioId,
+            }
+          : undefined,
+    });
     const imoveis = imoveisDb.map((imovelDb) =>
       this.imovelDbToImovel(imovelDb),
     );
