@@ -1,4 +1,4 @@
-import { ClienteProps, clientePropsSchema } from "~/domain/entities/cliente";
+import { clientePropsSchema } from "~/domain/entities/cliente";
 import { authHandler } from "../_helper/auth-handler";
 import { UseCaseFactory } from "~/factories/user-case.factory";
 
@@ -12,5 +12,13 @@ export function POST(request: Request) {
     }
     const cliente = await useCase.execute(input.data);
     return Response.json(cliente);
+  });
+}
+
+export function GET(request: Request) {
+  return authHandler(request, async (user) => {
+    const useCase = UseCaseFactory.listarClientes(user.id);
+    const clientes = await useCase.execute();
+    return Response.json(clientes);
   });
 }
