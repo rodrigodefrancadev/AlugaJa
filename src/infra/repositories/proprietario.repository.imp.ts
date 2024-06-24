@@ -6,18 +6,25 @@ import {
 import { ProprietarioRepository } from "~/domain/repositories/proprietario.repository";
 
 export class ProprietarioRepositorioImp implements ProprietarioRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly userId: string,
+  ) {}
 
   async cadastrarProprietario(dados: ProprietarioProps): Promise<Proprietario> {
     const proprietarioDb = await this.prisma.proprietario.create({
-      data: dados,
+      data: { ...dados, userId: this.userId },
     });
     const proprietario = this.proprietarioDbToProprietario(proprietarioDb);
     return proprietario;
   }
 
   async listarProprietarios(): Promise<Proprietario[]> {
-    const proprietariosDb = await this.prisma.proprietario.findMany();
+    const proprietariosDb = await this.prisma.proprietario.findMany({
+      where: {
+        userId: this.userId,
+      },
+    });
     const proprietarios = proprietariosDb.map((proprietarioDb) =>
       this.proprietarioDbToProprietario(proprietarioDb),
     );
@@ -28,6 +35,7 @@ export class ProprietarioRepositorioImp implements ProprietarioRepository {
     const proprietarioDb = await this.prisma.proprietario.findUnique({
       where: {
         id,
+        userId: this.userId,
       },
     });
     if (!proprietarioDb) {

@@ -12,13 +12,16 @@ import {
 export class ContratDeAluguelRepositoryImp
   implements ContratoDeAluguelRepository
 {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly userId: string,
+  ) {}
 
   async cadastrarContratoDeAluguel(
     dados: ContratoDeAluguelProps,
   ): Promise<ContratoDeAluguel> {
     const contratoDeAluguelDb = await this.prisma.contratoDeAluguel.create({
-      data: dados,
+      data: { ...dados, userId: this.userId },
     });
     const contratoDeAluguel =
       this.contratoDeAluguelDbToContratoDeAluguel(contratoDeAluguelDb);
@@ -29,13 +32,11 @@ export class ContratDeAluguelRepositoryImp
     filtro?: ListarContratosDeAluguelFiltro,
   ): Promise<ContratoDeAluguel[]> {
     const contratosDeAluguelDb = await this.prisma.contratoDeAluguel.findMany({
-      where:
-        filtro !== undefined
-          ? {
-              imovelId: filtro.imovelId,
-              clienteId: filtro.clienteId,
-            }
-          : undefined,
+      where: {
+        userId: this.userId,
+        imovelId: filtro?.imovelId,
+        clienteId: filtro?.clienteId,
+      },
     });
     const contratosDeAluguel = contratosDeAluguelDb.map((contratoDeAluguelDb) =>
       this.contratoDeAluguelDbToContratoDeAluguel(contratoDeAluguelDb),
@@ -47,6 +48,7 @@ export class ContratDeAluguelRepositoryImp
     const contratoDeAluguelDb = await this.prisma.contratoDeAluguel.findUnique({
       where: {
         id,
+        userId: this.userId,
       },
     });
     if (!contratoDeAluguelDb) {

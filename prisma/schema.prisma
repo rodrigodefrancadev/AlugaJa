@@ -11,13 +11,18 @@ datasource db {
 }
 
 model User {
-    id       String @id @default(cuid())
-    username String @unique
-    password String
+    id                String              @id @default(cuid())
+    username          String              @unique
+    password          String
+    Cliente           Cliente[]
+    Proprietario      Proprietario[]
+    ContratoDeAluguel ContratoDeAluguel[]
 }
 
 model Cliente {
     id          String              @id @default(cuid())
+    userId      String
+    user        User                @relation(fields: [userId], references: [id])
     nome        String
     cpf         String
     estadoCivil String
@@ -26,10 +31,14 @@ model Cliente {
     createdAt   DateTime            @default(now())
     updatedAt   DateTime            @updatedAt
     Contrato    ContratoDeAluguel[]
+
+    @@unique([userId, cpf])
 }
 
 model Proprietario {
     id          String   @id @default(cuid())
+    userId      String
+    user        User     @relation(fields: [userId], references: [id])
     nome        String
     cpf         String
     estadoCivil String
@@ -38,10 +47,13 @@ model Proprietario {
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
     Imovel      Imovel[]
+
+    @@unique([userId, cpf])
 }
 
 model Imovel {
     id             String              @id @default(cuid())
+    userId         String
     proprietarioId String
     proprietario   Proprietario        @relation(fields: [proprietarioId], references: [id])
     apelido        String
@@ -49,10 +61,14 @@ model Imovel {
     createdAt      DateTime            @default(now())
     updatedAt      DateTime            @updatedAt
     Contrato       ContratoDeAluguel[]
+
+    @@unique([userId, apelido])
 }
 
 model ContratoDeAluguel {
     id            String   @id @default(cuid())
+    userId        String
+    user          User     @relation(fields: [userId], references: [id])
     imovelId      String
     imovel        Imovel   @relation(fields: [imovelId], references: [id])
     clienteId     String

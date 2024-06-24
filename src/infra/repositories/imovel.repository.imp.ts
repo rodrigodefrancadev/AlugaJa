@@ -6,11 +6,14 @@ import {
 } from "~/domain/repositories/imovel.repository";
 
 export class ImovelRepositoryImp implements ImovelRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly userId: string,
+  ) {}
 
   async cadastrarImovel(dados: ImovelProps): Promise<Imovel> {
     const imovelDb = await this.prisma.imovel.create({
-      data: dados,
+      data: { ...dados, userId: this.userId },
     });
     const imovel = this.imovelDbToImovel(imovelDb);
     return imovel;
@@ -18,12 +21,10 @@ export class ImovelRepositoryImp implements ImovelRepository {
 
   async listarImoveis(filtro?: ListarImoveisFiltro): Promise<Imovel[]> {
     const imoveisDb = await this.prisma.imovel.findMany({
-      where:
-        filtro !== undefined
-          ? {
-              proprietarioId: filtro.proprietarioId,
-            }
-          : undefined,
+      where: {
+        userId: this.userId,
+        proprietarioId: filtro?.proprietarioId,
+      },
     });
     const imoveis = imoveisDb.map((imovelDb) =>
       this.imovelDbToImovel(imovelDb),
@@ -35,6 +36,7 @@ export class ImovelRepositoryImp implements ImovelRepository {
     const imovelDb = await this.prisma.imovel.findUnique({
       where: {
         id,
+        userId: this.userId,
       },
     });
     if (!imovelDb) {
