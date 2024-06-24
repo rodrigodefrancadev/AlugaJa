@@ -8,7 +8,7 @@ export class ListarClientesUseCase extends UseCase<void, Cliente[]> {
   }
 
   async execute(): Promise<Cliente[]> {
-    const cliente = await this.clienteRepository.listarClientes();
-    return cliente;
+    const clientes = await this.clienteRepository.listarClientes();
+    return clientes;
   }
 }
