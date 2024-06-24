@@ -5,7 +5,7 @@ import {
 } from "~/domain/entities/proprietario";
 import { ProprietarioRepository } from "~/domain/repositories/proprietario.repository";
 
-export class ProprietarioRepositorioImp implements ProprietarioRepository {
+export class ProprietarioRepositoryImp implements ProprietarioRepository {
   constructor(
     private readonly prisma: PrismaClient,
     private readonly userId: string,

@@ -9,7 +9,7 @@ import {
   ListarContratosDeAluguelFiltro,
 } from "~/domain/repositories/contrato-de-aluguel.repository";
 
-export class ContratDeAluguelRepositoryImp
+export class ContratoDeAluguelRepositoryImp
   implements ContratoDeAluguelRepository
 {
   constructor(

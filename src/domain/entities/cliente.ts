@@ -1,10 +1,14 @@
-export interface ClienteProps {
-  nome: string;
-  cpf: string;
-  estadoCivil: string;
-  profissao: string;
-  endereco: string;
-}
+import { z } from "zod";
+
+export const clientePropsSchema = z.object({
+  nome: z.string().min(1),
+  cpf: z.string().length(11),
+  estadoCivil: z.string().min(1),
+  profissao: z.string().min(1),
+  endereco: z.string().min(1),
+});
+
+export type ClienteProps = z.infer<typeof clientePropsSchema>;
 
 export class Cliente implements ClienteProps {
   constructor(
