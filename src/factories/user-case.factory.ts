@@ -8,7 +8,9 @@ import { DetalharProprietarioUseCase } from "~/domain/use-cases/detalhar-proprie
 import { CadastrarImovelUseCase } from "~/domain/use-cases/cadastrar-imovel.use-case";
 import { DetalharImovelUseCase } from "~/domain/use-cases/detalhar-imovel.use-case";
 import { ListarImoveisUseCase } from "~/domain/use-cases/listar-imoveis.use-case";
-import { CadastrarContratoDeAluguelUseCase } from "~/domain/use-cases/cadastrar-contrato-de-aluguel.use-cas";
+import { CadastrarContratoDeAluguelUseCase } from "~/domain/use-cases/cadastrar-contrato-de-aluguel.use-case";
+import { ListarContratosDeAluguelUseCase } from "~/domain/use-cases/listar-contratos-de-aluguel.use-case";
+import { DetalharContratoDeAluguelUseCase } from "~/domain/use-cases/contrato-de-aluguel.use-case";
 
 export class UseCaseFactory {
   public static cadastrarCliente(userId: string) {
@@ -59,5 +61,15 @@ export class UseCaseFactory {
   public static cadastrarContratoDeAluguel(userId: string) {
     const repository = RepositoryFactory.contratoDeAluguel(userId);
     return new CadastrarContratoDeAluguelUseCase(repository);
+  }
+
+  public static listarContratosDeAluguel(userId: string) {
+    const repository = RepositoryFactory.contratoDeAluguel(userId);
+    return new ListarContratosDeAluguelUseCase(repository);
+  }
+
+  public static detalharContratoDeAluguel(userId: string) {
+    const repository = RepositoryFactory.contratoDeAluguel(userId);
+    return new DetalharContratoDeAluguelUseCase(repository);
   }
 }

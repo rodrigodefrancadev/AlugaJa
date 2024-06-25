@@ -2,6 +2,7 @@ import { UseCaseFactory } from "~/factories/user-case.factory";
 import { authHandler } from "../_helper/auth-handler";
 import { contratoDeAluguelPropsSchema } from "~/domain/entities/contrato-de-aluguel";
 import { z } from "zod";
+import { NextRequest } from "next/server";
 
 const schema = contratoDeAluguelPropsSchema.extend({
   dataInicio: z.string().pipe(z.coerce.date()),
@@ -18,5 +19,22 @@ export function POST(request: Request) {
     }
     const contrato = await useCase.execute(input.data);
     return Response.json(contrato);
+  });
+}
+
+export function GET(request: NextRequest) {
+  return authHandler(request, async (user) => {
+    const useCase = UseCaseFactory.listarContratosDeAluguel(user.id);
+    const imovelId = request.nextUrl.searchParams.get("imovelId") ?? undefined;
+    const clienteId =
+      request.nextUrl.searchParams.get("clienteId") ?? undefined;
+
+    const contratosDeAluguel = await useCase.execute({
+      filtro: {
+        imovelId,
+        clienteId,
+      },
+    });
+    return Response.json(contratosDeAluguel);
   });
 }
