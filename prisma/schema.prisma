@@ -20,47 +20,68 @@ model User {
 }
 
 model Cliente {
-    id          String              @id @default(cuid())
-    userId      String
-    user        User                @relation(fields: [userId], references: [id])
-    nome        String
-    cpf         String
-    estadoCivil String
-    profissao   String
-    endereco    String
-    createdAt   DateTime            @default(now())
-    updatedAt   DateTime            @updatedAt
-    Contrato    ContratoDeAluguel[]
+    id                  String              @id @default(cuid())
+    userId              String
+    user                User                @relation(fields: [userId], references: [id])
+    nome                String
+    cpf                 String
+    estadoCivil         String
+    profissao           String
+    enderecoLogradouro  String
+    enderecoNumero      String
+    enderecoComplemento String
+    enderecoBairro      String
+    enderecoCidade      String
+    enderecoEstado      String
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    Contrato            ContratoDeAluguel[]
 
     @@unique([userId, cpf])
 }
 
 model Proprietario {
-    id          String   @id @default(cuid())
-    userId      String
-    user        User     @relation(fields: [userId], references: [id])
-    nome        String
-    cpf         String
-    estadoCivil String
-    profissao   String
-    endereco    String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    Imovel      Imovel[]
+    id                  String   @id @default(cuid())
+    userId              String
+    user                User     @relation(fields: [userId], references: [id])
+    nome                String
+    cpf                 String
+    estadoCivil         String
+    profissao           String
+    enderecoLogradouro  String
+    enderecoNumero      String
+    enderecoComplemento String
+    enderecoBairro      String
+    enderecoCidade      String
+    enderecoEstado      String
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+    Imovel              Imovel[]
 
     @@unique([userId, cpf])
 }
 
+enum TipoImovel {
+    RESIDENCIAL
+    COMERCIAL
+}
+
 model Imovel {
-    id             String              @id @default(cuid())
-    userId         String
-    proprietarioId String
-    proprietario   Proprietario        @relation(fields: [proprietarioId], references: [id])
-    apelido        String
-    endereco       String
-    createdAt      DateTime            @default(now())
-    updatedAt      DateTime            @updatedAt
-    Contrato       ContratoDeAluguel[]
+    id                  String              @id @default(cuid())
+    userId              String
+    proprietarioId      String
+    proprietario        Proprietario        @relation(fields: [proprietarioId], references: [id])
+    apelido             String
+    tipo                TipoImovel
+    enderecoLogradouro  String
+    enderecoNumero      String
+    enderecoComplemento String
+    enderecoBairro      String
+    enderecoCidade      String
+    enderecoEstado      String
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    Contrato            ContratoDeAluguel[]
 
     @@unique([userId, apelido])
 }
