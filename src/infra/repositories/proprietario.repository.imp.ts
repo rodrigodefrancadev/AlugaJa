@@ -3,6 +3,7 @@ import {
   ProprietarioProps,
   Proprietario,
 } from "~/domain/entities/proprietario";
+import { Endereco } from "~/domain/entities/value-objects/endereco";
 import { ProprietarioRepository } from "~/domain/repositories/proprietario.repository";
 
 export class ProprietarioRepositoryImp implements ProprietarioRepository {
@@ -12,8 +13,18 @@ export class ProprietarioRepositoryImp implements ProprietarioRepository {
   ) {}
 
   async cadastrarProprietario(dados: ProprietarioProps): Promise<Proprietario> {
+    const { endereco, ...resto } = dados;
     const proprietarioDb = await this.prisma.proprietario.create({
-      data: { ...dados, userId: this.userId },
+      data: {
+        ...resto,
+        userId: this.userId,
+        enderecoLogradouro: endereco.logradouro,
+        enderecoNumero: endereco.numero,
+        enderecoBairro: endereco.bairro,
+        enderecoComplemento: endereco.complemento,
+        enderecoCidade: endereco.cidade,
+        enderecoEstado: endereco.estado,
+      },
     });
     const proprietario = this.proprietarioDbToProprietario(proprietarioDb);
     return proprietario;
@@ -54,7 +65,14 @@ export class ProprietarioRepositoryImp implements ProprietarioRepository {
       proprietarioDb.cpf,
       proprietarioDb.estadoCivil,
       proprietarioDb.profissao,
-      proprietarioDb.endereco,
+      new Endereco(
+        proprietarioDb.enderecoLogradouro,
+        proprietarioDb.enderecoNumero,
+        proprietarioDb.enderecoBairro,
+        proprietarioDb.enderecoComplemento,
+        proprietarioDb.enderecoCidade,
+        proprietarioDb.enderecoEstado,
+      ),
     );
   }
 }

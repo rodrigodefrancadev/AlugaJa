@@ -1,5 +1,6 @@
 import { PrismaClient, Cliente as ClienteDb } from "@prisma/client";
 import { Cliente, ClienteProps } from "~/domain/entities/cliente";
+import { Endereco } from "~/domain/entities/value-objects/endereco";
 import { ClienteRepository } from "~/domain/repositories/cliente.repository";
 
 export class ClienteRepositoryImp implements ClienteRepository {
@@ -9,8 +10,18 @@ export class ClienteRepositoryImp implements ClienteRepository {
   ) {}
 
   async cadastrarCliente(dados: ClienteProps): Promise<Cliente> {
+    const { endereco, ...resto } = dados;
     const clienteDb = await this.prisma.cliente.create({
-      data: { ...dados, userId: this.userId },
+      data: {
+        ...resto,
+        userId: this.userId,
+        enderecoLogradouro: endereco.logradouro,
+        enderecoNumero: endereco.numero,
+        enderecoBairro: endereco.bairro,
+        enderecoComplemento: endereco.complemento,
+        enderecoCidade: endereco.cidade,
+        enderecoEstado: endereco.estado,
+      },
     });
     const cliente = this.mapClienteDbToCliente(clienteDb);
     return cliente;
@@ -49,7 +60,14 @@ export class ClienteRepositoryImp implements ClienteRepository {
       clienteDb.cpf,
       clienteDb.estadoCivil,
       clienteDb.profissao,
-      clienteDb.endereco,
+      new Endereco(
+        clienteDb.enderecoLogradouro,
+        clienteDb.enderecoNumero,
+        clienteDb.enderecoBairro,
+        clienteDb.enderecoComplemento,
+        clienteDb.enderecoCidade,
+        clienteDb.enderecoEstado,
+      ),
     );
   }
 }

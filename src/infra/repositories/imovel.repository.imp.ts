@@ -1,5 +1,6 @@
 import { PrismaClient, Imovel as ImovelDb } from "@prisma/client";
 import { Imovel, ImovelProps } from "~/domain/entities/imovel";
+import { Endereco } from "~/domain/entities/value-objects/endereco";
 import {
   ImovelRepository,
   ListarImoveisFiltro,
@@ -12,7 +13,7 @@ export class ImovelRepositoryImp implements ImovelRepository {
   ) {}
 
   async cadastrarImovel(dados: ImovelProps): Promise<Imovel> {
-    const { proprietarioId } = dados;
+    const { proprietarioId, endereco, ...resto } = dados;
     const proprietarioDb = await this.prisma.proprietario.findUnique({
       where: {
         id: proprietarioId,
@@ -25,7 +26,17 @@ export class ImovelRepositoryImp implements ImovelRepository {
     }
 
     const imovelDb = await this.prisma.imovel.create({
-      data: { ...dados, userId: this.userId },
+      data: {
+        ...resto,
+        proprietarioId,
+        userId: this.userId,
+        enderecoLogradouro: endereco.logradouro,
+        enderecoNumero: endereco.numero,
+        enderecoBairro: endereco.bairro,
+        enderecoComplemento: endereco.complemento,
+        enderecoCidade: endereco.cidade,
+        enderecoEstado: endereco.estado,
+      },
     });
 
     const imovel = this.imovelDbToImovel(imovelDb);
@@ -64,7 +75,15 @@ export class ImovelRepositoryImp implements ImovelRepository {
       imovelDb.id,
       imovelDb.proprietarioId,
       imovelDb.apelido,
-      imovelDb.endereco,
+      imovelDb.tipo,
+      new Endereco(
+        imovelDb.enderecoLogradouro,
+        imovelDb.enderecoNumero,
+        imovelDb.enderecoBairro,
+        imovelDb.enderecoComplemento,
+        imovelDb.enderecoCidade,
+        imovelDb.enderecoEstado,
+      ),
     );
   }
 }
