@@ -1,6 +1,6 @@
 import { PrismaClient, Cliente as ClienteDb } from "@prisma/client";
+import { Endereco } from "~/commom/value-objects/endereco";
 import { Cliente, ClienteProps } from "~/domain/entities/cliente";
-import { Endereco } from "~/domain/entities/value-objects/endereco";
 import { ClienteRepository } from "~/domain/repositories/cliente.repository";
 
 export class ClienteRepositoryImp implements ClienteRepository {

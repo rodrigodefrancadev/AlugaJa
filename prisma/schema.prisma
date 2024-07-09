@@ -87,17 +87,21 @@ model Imovel {
 }
 
 model ContratoDeAluguel {
-    id            String   @id @default(cuid())
-    userId        String
-    user          User     @relation(fields: [userId], references: [id])
-    imovelId      String
-    imovel        Imovel   @relation(fields: [imovelId], references: [id])
-    clienteId     String
-    cliente       Cliente  @relation(fields: [clienteId], references: [id])
-    valor         Float
-    diaVencimento Int
-    dataInicio    DateTime
-    meses         Int
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+    id                 String   @id @default(cuid())
+    userId             String
+    user               User     @relation(fields: [userId], references: [id])
+    imovelId           String
+    imovel             Imovel   @relation(fields: [imovelId], references: [id])
+    clienteId          String
+    cliente            Cliente  @relation(fields: [clienteId], references: [id])
+    valor              Float
+    diaVencimento      Int
+    dataInicio         DateTime
+    meses              Int
+    encargosJurosAoMes Float?
+    encargosMulta      Float?
+    garantia           Int
+    dataAssinatura     DateTime
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
 }

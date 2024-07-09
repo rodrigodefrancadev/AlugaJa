@@ -4,10 +4,10 @@ import { Imovel } from "~/domain/entities/imovel";
 import { Proprietario } from "~/domain/entities/proprietario";
 
 export type ContratoDeAluguelRendererInput = {
-  contratoDeAluguel: ContratoDeAluguel;
   locador: Proprietario;
   locatario: Cliente;
   imovel: Imovel;
+  contratoDeAluguel: ContratoDeAluguel;
 };
 
 export type ContratoDeAluguelRendererOutput = {

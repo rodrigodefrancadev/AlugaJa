@@ -1,6 +1,6 @@
 import { PrismaClient, Imovel as ImovelDb } from "@prisma/client";
+import { Endereco } from "~/commom/value-objects/endereco";
 import { Imovel, ImovelProps } from "~/domain/entities/imovel";
-import { Endereco } from "~/domain/entities/value-objects/endereco";
 import {
   ImovelRepository,
   ListarImoveisFiltro,

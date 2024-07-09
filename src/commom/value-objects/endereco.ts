@@ -20,4 +20,8 @@ export class Endereco implements EnderecoProps {
     public readonly cidade: string,
     public readonly estado: string,
   ) {}
+
+  toString() {
+    return `${this.logradouro}, ${this.numero}, ${this.complemento ? `${this.complemento}, ` : ""}${this.bairro}, ${this.cidade} - ${this.estado}`;
+  }
 }

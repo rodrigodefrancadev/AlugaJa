@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Endereco, enderecoSchema } from "./value-objects/endereco";
+import { Endereco, enderecoSchema } from "../../commom/value-objects/endereco";
 
 export const clientePropsSchema = z.object({
   nome: z.string().min(1),

@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 export function POST(request: Request) {
   return authHandler(request, async (user) => {
     const useCase = UseCaseFactory.cadastrarImovel(user.id);
-    const body = await request.json();
+    const body: unknown = await request.json();
     const input = imovelPropsSchema.safeParse(body);
     if (!input.success) {
       return Response.json({ error: input.error });

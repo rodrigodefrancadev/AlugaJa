@@ -6,13 +6,17 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
-import { ContratoDeAluguelParaImprimirData } from "./types";
+import { ClausulasBuilder } from "./clausulas-builder";
+import { ContratoDeAluguelRendererInput } from "~/domain/documents-renderers/contrato-de-aluguel-renderer";
+import { ddmmyyyy } from "~/commom/helpers/ddmmyyyy";
 
 regiserFonts();
 
-export const Render: React.FC<{
-  contratoDeAluguel: ContratoDeAluguelParaImprimirData;
-}> = ({ contratoDeAluguel: { clausulas } }) => {
+export const Render: React.FC<{ input: ContratoDeAluguelRendererInput }> = ({
+  input,
+}) => {
+  const { locador, locatario, imovel } = input;
+  const clausulas = ClausulasBuilder.build(input);
   return (
     <Document>
       <Page style={styles.page}>
@@ -26,20 +30,18 @@ export const Render: React.FC<{
           <Text style={styles.clausulaTitulo}>LOCADOR: </Text>
 
           <Text style={styles.clausulaTexto}>
-            Francineia Santos de França, brasileira, solteira, empresária,
-            portadora da cédula de identidade 54181696-9 – expedida pela SSP/MA,
-            inscrito no CPF sob o no 795.193.503-49 e residente na Rua
-            Vasconcelos, 03, Araçagy, São José de Ribamar - MA.
+            {locador.nome}, brasileiro(a), {locador.estadoCivil},{" "}
+            {locador.profissao}, inscrito no CPF sob o número {locador.cpf} e
+            residente no endereço {locador.endereco.toString()}
           </Text>
         </Text>
 
         <Text style={styles.clausulaContainer}>
           <Text style={styles.clausulaTitulo}>LOCATÁRIO: </Text>
           <Text style={styles.clausulaTexto}>
-            Romário do Nascimento Rocha, brasileiro, solteiro, autônoma,
-            portador da cédula de identidade 074911602021-6 expedida pela
-            SSP/MA, inscrita no CPF sob o no 038.528.093-98, residente na Rua da
-            Carambola, Quadra 16, n 26, Ap 06, Pirâmide, Raposa - MA.
+            {locatario.nome}, brasileiro(a), {locatario.estadoCivil},{" "}
+            {locatario.profissao}, inscrito no CPF sob o número {locatario.cpf}{" "}
+            e residente no endereço {locatario.endereco.toString()}
           </Text>
         </Text>
 
@@ -59,14 +61,17 @@ export const Render: React.FC<{
           vias de igual teor e forma, na presença das testemunhas.
         </Text>
 
-        <Text style={styles.texto}>Raposa-MA, 10 de março de 2024.</Text>
+        <Text style={styles.texto}>
+          {imovel.endereco.cidade}-{imovel.endereco.estado},{" "}
+          {ddmmyyyy(input.contratoDeAluguel.dataAssinatura)}
+        </Text>
 
         <View style={styles.assinaturaContainer}>
           <View style={styles.assinaturaItemContainer}>
             <Text style={styles.texto}>
               ________________________________________________
             </Text>
-            <Text style={styles.texto}>Francineia Santos de França</Text>
+            <Text style={styles.texto}>{locador.nome}</Text>
             <Text style={styles.texto}>LOCADOR</Text>
           </View>
 
@@ -74,7 +79,7 @@ export const Render: React.FC<{
             <Text style={styles.texto}>
               ________________________________________________
             </Text>
-            <Text style={styles.texto}>Romário do Nascimento Rocha</Text>
+            <Text style={styles.texto}>{locatario.nome}</Text>
             <Text style={styles.texto}>LOCATÁRIO</Text>
           </View>
         </View>

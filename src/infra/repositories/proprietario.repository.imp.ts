@@ -1,9 +1,9 @@
 import { PrismaClient, Proprietario as ProprietarioDb } from "@prisma/client";
+import { Endereco } from "~/commom/value-objects/endereco";
 import {
   ProprietarioProps,
   Proprietario,
 } from "~/domain/entities/proprietario";
-import { Endereco } from "~/domain/entities/value-objects/endereco";
 import { ProprietarioRepository } from "~/domain/repositories/proprietario.repository";
 
 export class ProprietarioRepositoryImp implements ProprietarioRepository {

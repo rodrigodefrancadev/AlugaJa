@@ -8,7 +8,7 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
-  const body = await request.json();
+  const body: unknown = await request.json();
   const credentials = schema.safeParse(body);
   if (!credentials.success) {
     return Response.json({ error: credentials.error });

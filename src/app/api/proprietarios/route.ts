@@ -5,7 +5,7 @@ import { proprietarioPropsSchema } from "~/domain/entities/proprietario";
 export function POST(request: Request) {
   return authHandler(request, async (user) => {
     const useCase = UseCaseFactory.cadastrarProprietario(user.id);
-    const body = await request.json();
+    const body: unknown = await request.json();
     const input = proprietarioPropsSchema.safeParse(body);
     if (!input.success) {
       return Response.json({ error: input.error });

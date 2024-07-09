@@ -1,7 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import {
+  PrismaClient,
+  ContratoDeAluguel as ContratoDeAluguelDb,
+} from "@prisma/client";
 import {
   ContratoDeAluguelProps,
-  ContratoDeAluguel as ContratoDeAluguelDb,
   ContratoDeAluguel,
 } from "~/domain/entities/contrato-de-aluguel";
 import {
@@ -92,6 +94,15 @@ export class ContratoDeAluguelRepositoryImp
       contratoDeAluguelDb.meses,
       contratoDeAluguelDb.valor,
       contratoDeAluguelDb.diaVencimento,
+      contratoDeAluguelDb.encargosJurosAoMes !== null &&
+      contratoDeAluguelDb.encargosMulta !== null
+        ? {
+            jurosAoMes: contratoDeAluguelDb.encargosJurosAoMes,
+            multa: contratoDeAluguelDb.encargosMulta,
+          }
+        : null,
+      contratoDeAluguelDb.garantia,
+      contratoDeAluguelDb.dataAssinatura,
     );
   }
 }
